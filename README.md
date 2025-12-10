@@ -13,15 +13,45 @@ Tools Used: SQL on Google BigQuery
 ---
 
 ## 📑 Table of Contents  
-I. [Introduction](#-Introduction)  
-II. [Data Access](#-Data-Access)  
-III. [Exploring Dataset](#-Exploring-Dataset)
-IV. [Conclusion](#-Conclusion)
+I. [📌 Background & Overview](#-background--overview)  
+II. [📂 Dataset Description & Data Structure](#-dataset-description--data-structure)
+III. [🔎 Final Conclusion & Recommendations](#-final-conclusion--recommendations)
 
 ---
+## 📌 Background & Overview  
 
-## I. Introduction 
-My project involves SQL exploration of an eCommerce dataset (from the Google Analytics public data) within Google BigQuery. The data represents an eCommerce website.
+### Objective:
+### 📖 What is this project about? What Business Question will it solve?
+
+🎯 Main Business Question
+
+How can the business optimize website performance and user conversion by analyzing visitor behavior, traffic sources, and product-level purchase patterns?
+
+📘 Project Overview
+
+  - Data Source: A comprehensive dataset of web analytics (visits, pageviews, bounce rates) and e-commerce transactions from 2017.
+
+  - Methodology: Advanced SQL querying to analyze performance at the session, user, and product levels.
+
+  - Goal: To diagnose traffic quality, revenue drivers, and funnel efficiency.
+
+💡 Business Questions this project answers
+
+- ✔️ How does website performance change across months (visits, pageviews, and transactions)?
+- ✔️ Which traffic sources bring the most valuable visitors and have the lowest bounce rates?
+- ✔️ How does revenue vary by traffic source and over time (weekly and monthly trends)?
+- ✔️ How do purchasers behave differently from non-purchasers in terms of engagement (pageviews, transactions, and spending)?
+- ✔️ What is the average value per session and per customer, helping to measure marketing ROI?
+- ✔️ Which products are commonly purchased together, revealing potential cross-sell opportunities?
+- ✔️ What is the conversion funnel from product view → add-to-cart → purchase, and how efficient is it for each product?
+
+### 👤 Who is this project for?  
+
+- ✔️ Digital Marketing Teams – to evaluate traffic sources, campaign performance, and bounce rate.
+- ✔️ E-commerce Managers – to monitor key metrics like transactions, revenue, and conversion rates.
+- ✔️ Product Managers – to identify top-performing and underperforming products and potential bundling opportunities.
+- ✔️ Data Analysts – to build dashboards or performance reports using SQL and analytics data.
+- ✔️ Business Decision Makers / Executives – to make data-driven decisions about marketing spend, website optimization, and sales strategy.
 
 ## II. Data Access
 1. Log in to Google Cloud Platform (GCP) and create a new project.
@@ -40,16 +70,34 @@ My project involves SQL exploration of an eCommerce dataset (from the Google Ana
 In this project, I will write 08 query in Bigquery base on Google Analytics dataset
 ### Task 1: Querying all visits, pageviews, transactions and revenue of website in first quarter of 2017
 * SQL code
-  
-  <img width="648" height="224" alt="query1" src="https://github.com/user-attachments/assets/de5a2023-821e-41cd-9a71-527bebd123d4" />
-
+~~~sql
+SELECT
+  FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+  ,SUM(totals.visits) as visits
+  ,SUM(totals.pageviews) as pageviews
+  ,SUM(totals.transactions) as transactions
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE _table_suffix BETWEEN '0101' AND '0331'
+GROUP BY month
+ORDER BY month;
+~~~
 * Query results
   
   <img width="690" height="120" alt="kq1" src="https://github.com/user-attachments/assets/bbd6e125-0da1-4aa2-b085-48289f132172" />
 
 ### Task 2: Bounce rate per traffic source in July 2017
 * SQL code
-  
+~~~sql
+SELECT 
+  trafficSource.source as source
+  ,SUM(totals.visits) as total_visits
+  ,SUM(totals.bounces) as total_no_of_bounces
+  ,SUM(totals.bounces)/SUM(totals.visits) as bounce_rate
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+GROUP BY source
+ORDER BY total_visits DESC
+LIMIT 10;
+~~~
   <img width="601" height="144" alt="query2" src="https://github.com/user-attachments/assets/abcc0bef-1b9a-42f2-b107-424af31787bd" />
 
 * Query results
@@ -58,7 +106,55 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 
 ### Task 3:  Revenue by traffic source by week, by month in June 2017
 * SQL code
-  
+~~~sql
+WITH month_summary AS (
+    SELECT
+        FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS time,
+        trafficSource.source AS source,
+        SUM(product.productRevenue) / 1000000 AS revenue
+    FROM
+        `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+        UNNEST(hits)hits,
+        UNNEST(hits.product)product
+        WHERE product.productRevenue is not null
+    GROUP BY
+        time,
+        source
+),
+
+week_summary AS (
+    SELECT
+        FORMAT_DATE('%Y%W', PARSE_DATE('%Y%m%d', date)) AS time,
+        trafficSource.source AS source,
+        SUM(product.productRevenue) / 1000000 AS revenue
+    FROM
+        `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+        UNNEST(hits)hits,
+        UNNEST(hits.product)product
+        WHERE product.productRevenue is not null
+    GROUP BY
+        time,
+        source
+)
+
+SELECT
+    'Month' as time_type,
+    month_summary.time,
+    source,
+    revenue
+FROM
+    month_summary
+UNION ALL 
+SELECT 
+    'Week' as time_type,
+    week_summary.time,
+    source,
+    revenue
+FROM week_summary
+ORDER BY revenue DESC
+LIMIT 10;
+
+~~~
   <img width="525" height="639" alt="query3" src="https://github.com/user-attachments/assets/a4d927c4-727d-4763-9d3b-0ea22aff5a84" />
 
 * Query results
@@ -67,6 +163,43 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 
 ### Task 4: Average number of product pageviews by purchaser type (purchasers vs non-purchasers) in June & July 2017
 * SQL code
+~~~sql
+WITH purchasers as
+(
+SELECT
+ FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d',date)) month
+ ,SUM(totals.pageviews)/COUNT(DISTINCT fullVisitorId) as avg_pageviews_purchase
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+UNNEST (hits) hits,
+UNNEST (hits.product)product
+WHERE _table_suffix BETWEEN '0601' AND '0731'
+AND  totals.transactions >=1
+AND productRevenue is not null
+GROUP BY month
+),
+non_purchasers as
+(
+SELECT
+ FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d',date)) month
+ ,SUM(totals.pageviews)/COUNT(DISTINCT fullVisitorId) as avg_pageviews_non_purchase
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+UNNEST (hits) hits,
+UNNEST (hits.product)product
+WHERE _table_suffix BETWEEN '0601' AND '0731'
+AND  totals.transactions IS NULL
+AND  product.productRevenue is null
+GROUP BY month
+)
+
+SELECT 
+  p1.month
+  ,p1.avg_pageviews_purchase
+  ,p2.avg_pageviews_non_purchase
+FROM purchasers as p1
+LEFT JOIN non_purchasers as p2
+USING(month)
+ORDER BY 1;
+~~~
   
   <img width="730" height="634" alt="query4" src="https://github.com/user-attachments/assets/fecdec07-b4a8-40d2-b49d-d45f613bc97d" />
 
@@ -76,6 +209,17 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 
 ### Task 5:  Average number of transactions per user that made a purchase in July 2017
 * SQL code
+~~~sql
+SELECT
+ FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d',date)) month
+ ,SUM(totals.transactions)/COUNT(DISTINCT fullVisitorId) as avg_total_transactions_per_user
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+UNNEST (hits) hits,
+UNNEST (hits.product)product
+WHERE  totals.transactions >=1
+AND productRevenue is not null
+GROUP BY month;
+~~~
 
   <img width="786" height="300" alt="query5" src="https://github.com/user-attachments/assets/9d057c4a-076f-411c-8357-2c935dd7eca1" />
 
@@ -87,6 +231,17 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 
 ### Task 6: Average amount of money spent per session. Only include purchaser data in July 2017
 * SQL code
+~~~sql
+SELECT  
+  FORMAT_DATE('%Y%m',PARSE_DATE('%Y%m%d',date)) month
+  , SUM(product.productRevenue)/SUM(totals.visits)/1000000 as avg_revenue_by_user_per_visit
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+UNNEST (hits) hits,
+UNNEST (hits.product)product
+WHERE totals.transactions IS NOT NULL
+AND product.productRevenue IS NOT NULL
+GROUP BY month;
+~~~
 
   <img width="768" height="165" alt="query6" src="https://github.com/user-attachments/assets/1dff6628-b350-49a7-a26d-c41f73be5efb" />
 
@@ -98,6 +253,27 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 
 ### Task 7: Other products purchased by customers who purchased product "YouTube Men's Vintage Henley" in July 2017. Output should show product name and the quantity was ordered.
 * SQL code
+~~~sql
+SELECT  
+  DISTINCT v2ProductName AS other_purchased_products
+  , SUM(productQuantity) AS quantity
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+UNNEST (hits) hits,
+UNNEST (hits.product)product
+WHERE product.productRevenue IS NOT NULL
+AND v2ProductName != "YouTube Men's Vintage Henley"
+AND fullVisitorId IN
+  (SELECT DISTINCT fullVisitorId
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+  UNNEST (hits) hits,
+  UNNEST (hits.product)product
+  WHERE product.productRevenue IS NOT NULL
+  AND v2ProductName = "YouTube Men's Vintage Henley")
+GROUP BY v2ProductName
+ORDER BY 2 DESC
+LIMIT 10;
+~~~
+
 
   <img width="639" height="303" alt="query7" src="https://github.com/user-attachments/assets/3ee9cf70-464c-44ca-95fd-c30509dadfdb" />
 
@@ -110,7 +286,8 @@ In this project, I will write 08 query in Bigquery base on Google Analytics data
 ### Task 8: Calculate cohort map from pageview to addtocart to purchase in last 3 month.
 * SQL code
   
-~~~
+~~~ sql
+
 with
 product_view as(
   SELECT
