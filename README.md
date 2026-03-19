@@ -68,7 +68,7 @@ How can the business optimize website performance and user conversion by analyzi
 
 ## III. Exploring Dataset
 In this project, I will write 08 query in Bigquery base on Google Analytics dataset
-### Task 1: Querying all visits, pageviews, transactions and revenue of website in first quarter of 2017
+### Task 1: Querying traffic trends of website in first quarter of 2017 
 * SQL code
 ~~~sql
 SELECT
@@ -85,7 +85,10 @@ ORDER BY month;
   
   <img width="690" height="120" alt="kq1" src="https://github.com/user-attachments/assets/bbd6e125-0da1-4aa2-b085-48289f132172" />
 
-### Task 2: Bounce rate per traffic source in July 2017
+**Insights:**
+
+
+### Task 2: Top traffic sources in July 2017
 * SQL code
 ~~~sql
 SELECT 
@@ -98,13 +101,20 @@ GROUP BY source
 ORDER BY total_visits DESC
 LIMIT 10;
 ~~~
-  <img width="601" height="144" alt="query2" src="https://github.com/user-attachments/assets/abcc0bef-1b9a-42f2-b107-424af31787bd" />
 
 * Query results
   
   <img width="688" height="499" alt="kq2" src="https://github.com/user-attachments/assets/07a72646-a19e-4ceb-b5a0-93cf454b5940" />
 
-### Task 3:  Revenue by traffic source by week, by month in June 2017
+  **Insights:**
+
+  - Google: It’s a primary engine, driving ~60% of total traffic (38k visits). It’s working, keep fueling it.
+
+  - Direct: This is a highest-quality traffic. They have the lowest bounce rate (43.3%), meaning these users know your brand and actually stick around.
+
+  - YouTube: This is a weakest link. It has the lowest volume (6k) and the highest bounce rate (66.7%). Two out of three people leave immediately, perhaps suggesting       your video content doesn't match what's on the website.
+
+### Task 3:  Revenue by Traffic Sources in June 2017
 * SQL code
 ~~~sql
 WITH month_summary AS (
@@ -155,11 +165,12 @@ ORDER BY revenue DESC
 LIMIT 10;
 
 ~~~
-  <img width="525" height="639" alt="query3" src="https://github.com/user-attachments/assets/a4d927c4-727d-4763-9d3b-0ea22aff5a84" />
 
 * Query results
   
   <img width="855" height="502" alt="kq3" src="https://github.com/user-attachments/assets/9e13272a-3b75-4440-935a-d90899e3fad4" />
+
+**Insights:**
 
 ### Task 4: Average number of product pageviews by purchaser type (purchasers vs non-purchasers) in June & July 2017
 * SQL code
@@ -200,13 +211,11 @@ LEFT JOIN non_purchasers as p2
 USING(month)
 ORDER BY 1;
 ~~~
-  
-  <img width="730" height="634" alt="query4" src="https://github.com/user-attachments/assets/fecdec07-b4a8-40d2-b49d-d45f613bc97d" />
 
 * Query results
   
   <img width="558" height="83" alt="kq4" src="https://github.com/user-attachments/assets/867f53d0-a15b-46c0-8b48-43f1e9223f07" />
-
+**Insights:**
 ### Task 5:  Average number of transactions per user that made a purchase in July 2017
 * SQL code
 ~~~sql
@@ -221,13 +230,10 @@ AND productRevenue is not null
 GROUP BY month;
 ~~~
 
-  <img width="786" height="300" alt="query5" src="https://github.com/user-attachments/assets/9d057c4a-076f-411c-8357-2c935dd7eca1" />
-
-
 * Query results
 
   <img width="502" height="54" alt="kq5" src="https://github.com/user-attachments/assets/e8fb34f2-58e7-4265-a854-98332af7fc5b" />
-
+**Insights:**
 
 ### Task 6: Average amount of money spent per session. Only include purchaser data in July 2017
 * SQL code
@@ -243,13 +249,10 @@ AND product.productRevenue IS NOT NULL
 GROUP BY month;
 ~~~
 
-  <img width="768" height="165" alt="query6" src="https://github.com/user-attachments/assets/1dff6628-b350-49a7-a26d-c41f73be5efb" />
-
-
 * Query results
 
   <img width="502" height="51" alt="kq6" src="https://github.com/user-attachments/assets/b9c1c504-0b49-44d5-ae93-6feb9d261c80" />
-
+**Insights:**
 
 ### Task 7: Other products purchased by customers who purchased product "YouTube Men's Vintage Henley" in July 2017. Output should show product name and the quantity was ordered.
 * SQL code
@@ -274,14 +277,10 @@ ORDER BY 2 DESC
 LIMIT 10;
 ~~~
 
-
-  <img width="639" height="303" alt="query7" src="https://github.com/user-attachments/assets/3ee9cf70-464c-44ca-95fd-c30509dadfdb" />
-
-
 * Query results
 
   <img width="422" height="500" alt="kq7" src="https://github.com/user-attachments/assets/90274667-1048-4bf9-a682-086cf5e20156" />
-
+**Insights:**
 
 ### Task 8: Calculate cohort map from pageview to addtocart to purchase in last 3 month.
 * SQL code
@@ -341,7 +340,7 @@ order by pv.month;
 * Query results
   
   <img width="879" height="103" alt="kq8" src="https://github.com/user-attachments/assets/96f26514-0a88-4349-a390-3d7a96499eaa" />
-
+**Insights:**
 
 IV. Conclusion
 
