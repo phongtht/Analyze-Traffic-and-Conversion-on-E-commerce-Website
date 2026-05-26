@@ -124,7 +124,8 @@ LIMIT 10;
 | 8   | dfa                   | 302          | 124                 | 41.06      |
 | 9   | sites.google.com      | 230          | 97                  | 42.17      |
 | 10  | facebook.com          | 191          | 102                 | 53.40      |
-  **Insights:**
+  
+**Insights:**
 
   - Google: It’s a primary engine, driving ~60% of total traffic (38k visits). It’s working, keep fueling it.
 
