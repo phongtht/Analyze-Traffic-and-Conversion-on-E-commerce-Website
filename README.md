@@ -82,8 +82,6 @@ GROUP BY month
 ORDER BY month;
 ~~~
 * Query results
-  
-  <img width="690" height="120" alt="kq1" src="https://github.com/user-attachments/assets/bbd6e125-0da1-4aa2-b085-48289f132172" />
 
 | month  | visits | pageviews | transactions |
 |--------|--------|-----------|--------------|
@@ -93,7 +91,11 @@ ORDER BY month;
 
 **Insights:**
 
+While traffic (visits) grew modestly by only 8.1% from January to March, transactions experienced explosive growth, skyrocketing by     39.3% (from 713 to 993 transactions).
+Transactions steadily climbed each month, peaked at 993 in March.
+Interestingly, as conversion rates rose, the average #pageviews per visit actually dropped but then it remained stable
 
+  
 ### Task 2: Top traffic sources in July 2017
 * SQL code
 ~~~sql
@@ -109,9 +111,19 @@ LIMIT 10;
 ~~~
 
 * Query results
-  
-  <img width="688" height="499" alt="kq2" src="https://github.com/user-attachments/assets/07a72646-a19e-4ceb-b5a0-93cf454b5940" />
 
+| Row | source                | total_visits | total_no_of_bounces | bounce_rate |
+|-----|-----------------------|--------------|---------------------|-------------|
+| 1   | google                | 38400        | 19798               | 51.56      |
+| 2   | (direct)              | 19891        | 8606                | 43.27      |
+| 3   | youtube.com           | 6351         | 4238                | 66.73      |
+| 4   | analytics.google.com  | 1972         | 1064                | 53.95      |
+| 5   | Partners              | 1788         | 936                 | 52.35      |
+| 6   | m.facebook.com        | 669          | 430                 | 64.27      |
+| 7   | google.com            | 368          | 183                 | 49.73      |
+| 8   | dfa                   | 302          | 124                 | 41.06      |
+| 9   | sites.google.com      | 230          | 97                  | 42.17      |
+| 10  | facebook.com          | 191          | 102                 | 53.40      |
   **Insights:**
 
   - Google: It’s a primary engine, driving ~60% of total traffic (38k visits). It’s working, keep fueling it.
@@ -173,9 +185,19 @@ LIMIT 10;
 ~~~
 
 * Query results
-  
-  <img width="855" height="502" alt="kq3" src="https://github.com/user-attachments/assets/9e13272a-3b75-4440-935a-d90899e3fad4" />
 
+| Row | time_type | time   | source   | revenue    |
+|-----|-----------|--------|----------|------------|
+| 1   | Month     | 201706 | (direct) | 97333.6197 |
+| 2   | Week      | 201724 | (direct) | 30908.9099 |
+| 3   | Week      | 201725 | (direct) | 27295.3199 |
+| 4   | Month     | 201706 | google   | 18757.1799 |
+| 5   | Week      | 201723 | (direct) | 17325.6799 |
+| 6   | Week      | 201726 | (direct) | 14914.8100 |
+| 7   | Week      | 201724 | google   | 9217.1700  |
+| 8   | Month     | 201706 | dfa      | 8862.2300  |
+| 9   | Week      | 201722 | (direct) | 6888.9000  |
+| 10  | Week      | 201726 | google   | 5330.5700  |
 **Insights:**
 
 ### Task 4: Average number of product pageviews by purchaser type (purchasers vs non-purchasers) in June & July 2017
@@ -219,9 +241,15 @@ ORDER BY 1;
 ~~~
 
 * Query results
-  
-  <img width="558" height="83" alt="kq4" src="https://github.com/user-attachments/assets/867f53d0-a15b-46c0-8b48-43f1e9223f07" />
+
+| Row | month  | avg_pageviews_purchase  | avg_pageviews_non_purchase  |
+|-----|--------|-------------------------|-----------------------------|
+| 1   | 201706 | 94.02050113895217        | 316.86558846341671           |
+| 2   | 201707 | 124.23755186721992       | 334.05655979568053           |
+
 **Insights:**
+
+  
 ### Task 5:  Average number of transactions per user that made a purchase in July 2017
 * SQL code
 ~~~sql
@@ -238,8 +266,12 @@ GROUP BY month;
 
 * Query results
 
-  <img width="502" height="54" alt="kq5" src="https://github.com/user-attachments/assets/e8fb34f2-58e7-4265-a854-98332af7fc5b" />
+| Month  | Avg_total_transactions_per_user |
+|--------|---------------------------------|
+| 201707 | 4.16390041493776                |
+
 **Insights:**
+
 
 ### Task 6: Average amount of money spent per session. Only include purchaser data in July 2017
 * SQL code
@@ -257,7 +289,9 @@ GROUP BY month;
 
 * Query results
 
-  <img width="502" height="51" alt="kq6" src="https://github.com/user-attachments/assets/b9c1c504-0b49-44d5-ae93-6feb9d261c80" />
+| Month  | avg_revenue_by_user_per_visit |
+|--------|-------------------------------|
+| 201707 | 43.86                         |
 **Insights:**
 
 ### Task 7: Other products purchased by customers who purchased product "YouTube Men's Vintage Henley" in July 2017. Output should show product name and the quantity was ordered.
@@ -285,7 +319,18 @@ LIMIT 10;
 
 * Query results
 
-  <img width="422" height="500" alt="kq7" src="https://github.com/user-attachments/assets/90274667-1048-4bf9-a682-086cf5e20156" />
+| Row | other_purchased_products                | quantity |
+|-----|-----------------------------------------|----------|
+| 1   | Google Sunglasses                       | 20       |
+| 2   | Google Women's Vintage Hero ...         | 7        |
+| 3   | SPF-15 Slim & Slender Lip Balm          | 6        |
+| 4   | Google Women's Short Sleeve ...         | 4        |
+| 5   | YouTube Men's Fleece Hoodie ...         | 3        |
+| 6   | Google Men's Short Sleeve Bad...        | 3        |
+| 7   | Android Men's Vintage Henley            | 2        |
+| 8   | 22 oz YouTube Bottle Infuser            | 2        |
+| 9   | Google Men's Short Sleeve Her...        | 2        |
+| 10  | Android Women's Fleece Hoodie           | 2        |
 **Insights:**
 
 ### Task 8: Calculate cohort map from pageview to addtocart to purchase in last 3 month.
@@ -344,8 +389,14 @@ order by pv.month;
 
 ~~~
 * Query results
-  
-  <img width="879" height="103" alt="kq8" src="https://github.com/user-attachments/assets/96f26514-0a88-4349-a390-3d7a96499eaa" />
+
+| Row | month  | num_product_view | num_addtocart | num_purchase | add_to_cart_rate | purchase_rate |
+|-----|--------|------------------|---------------|--------------|------------------|---------------|
+| 1   | 201701 | 25787            | 7342          | 2143         | 28.47            | 8.31          |
+| 2   | 201702 | 21489            | 7360          | 2060         | 34.25            | 9.59          |
+| 3   | 201703 | 23549            | 8782          | 2977         | 37.29            | 12.64         |
+
+
 **Insights:**
 
 IV. Conclusion
