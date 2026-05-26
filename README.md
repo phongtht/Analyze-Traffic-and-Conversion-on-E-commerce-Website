@@ -85,6 +85,12 @@ ORDER BY month;
   
   <img width="690" height="120" alt="kq1" src="https://github.com/user-attachments/assets/bbd6e125-0da1-4aa2-b085-48289f132172" />
 
+| month  | visits | pageviews | transactions |
+|--------|--------|-----------|--------------|
+| 201701 | 64694  | 257708    | 713          |
+| 201702 | 62192  | 233373    | 733          |
+| 201703 | 69931  | 259522    | 993          |
+
 **Insights:**
 
 
