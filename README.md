@@ -91,7 +91,7 @@ ORDER BY month;
 
 **Insights:**
 
-While traffic (visits) grew modestly by only 8.1% from January to March, transactions experienced explosive growth, skyrocketing by     39.3% (from 713 to 993 transactions).
+While traffic (visits) grew modestly by only 8.1% from January to March, transactions experienced explosive growth, skyrocketing by 39.3% (from 713 to 993 transactions).
 Transactions steadily climbed each month, peaked at 993 in March.
 Interestingly, as conversion rates rose, the average #pageviews per visit actually dropped but then it remained stable
 
@@ -199,7 +199,11 @@ LIMIT 10;
 | 8   | Month     | 201706 | dfa      | 8862.2300  |
 | 9   | Week      | 201722 | (direct) | 6888.9000  |
 | 10  | Week      | 201726 | google   | 5330.5700  |
+
 **Insights:**
+  - "Direct" is the primary revenue driver, significantly outperforming "google" and "dfa." This warrants further investigation to determine if it reflects true brand       loyalty or misattributed traffic.
+  
+  - Revenue across key channels experienced a sharp decline in week at 26th 2017 compared to earlier weeks in 06th 2017, suggesting a potential drop-off in campaign effectiveness or external disruption.
 
 ### Task 4: Average number of product pageviews by purchaser type (purchasers vs non-purchasers) in June & July 2017
 * SQL code
@@ -249,7 +253,8 @@ ORDER BY 1;
 | 2   | 201707 | 124.23755186721992       | 334.05655979568053           |
 
 **Insights:**
-
+  - Visitors who complete a purchase view significantly fewer pages than those who don't.
+  - From June to July, the average pageviews for purchasers jumped from ~94 to ~124, and for non-purchasers from ~317 to ~334.
   
 ### Task 5:  Average number of transactions per user that made a purchase in July 2017
 * SQL code
